@@ -1,115 +1,96 @@
-file_name = "hello.txt"
+file_name = "books.txt"
 
-def load_book():
-    books = []
+def load_books():
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
-            for line in file:
-                if line.strip():
-                    num, nume, date = line.strip().split('')
-                    books.append({'num': num, 'name': name, 'date':date})
+            return [line.strip().split(';') for line in file if line.strip()]
     except FileNotFoundError:
-                    pass
-    return books
+        return []
+
 def save_books(books):
     with open(file_name, 'w', encoding='utf-8') as file:
         for book in books:
-            file.write(f"{book['num']}{book['name']}{book['date']}\n")
+            file.write(';'.join(book) + '\n')
 
 def add_book():
-    num = input("Введите номер книги: ")
-    name = input("Введите название книги: ")
-    date = input("Введите дату издания книги(дд.мм.гггг) книги: ")
-
-    books = load_book()
-    books.append({'num': num, 'name': name, 'date':date})
+    num = input("Номер книги: ")
+    name = input("Название книги: ")
+    date = input("Дата (дд.мм.гггг): ")
+    
+    books = load_books()
+    books.append([num, name, date])
     save_books(books)
-    print("Книга добавлена")
+    print("Книга добавлена!")
+
 def delete_book():
-    search = input("Удалите по номеру(1) или по названию(2): ")
-
+    books = load_books()
+    search = input("Удалить по номеру(1) или названию(2): ")
+    
     if search == '1':
-        num = input("Введите номер книги для удаления: ")
-        books = [book for book in books if book['num'] != num]
-
+        num = input("Номер книги: ")
+        books = [book for book in books if book[0] != num]
     else:
-        name = input("Введите название книги для удаления: ")
-        books = [book for book in books if book['name'] != name]
-
+        name = input("Название книги: ")
+        books = [book for book in books if book[1].lower() != name.lower()]
+    
     save_books(books)
-    print('Книга удалена')
+    print("Книга удалена!")
 
 def clear_books():
-    confirm = input("Вы уверены что хотите отчистить весь список?(да\нет): ")
-    if confirm.lower() == 'да':
+    if input("Очистить весь список? (да/нет): ").lower() == 'да':
         save_books([])
-        print('Список очищен')
+        print("Список очищен!")
+
 def search_book():
-    search_type = input("Поиск по номеру(1), по названию(2), по дате издания(3): ")
     books = load_books()
-    found = []
-
+    search_type = input("Поиск по номеру(1), названию(2) или дате(3): ")
+    
     if search_type == '1':
-        num = input("Поиск по номеру: ")
-        found = [book for book in books if book['num'] != num]
+        num = input("Номер: ")
+        found = [book for book in books if book[0] == num]
     elif search_type == '2':
-        name = input("Поиск по названию: ")
-        found = [book for book in books if book['name'].lower() == name.lower()]
+        name = input("Название: ")
+        found = [book for book in books if name.lower() in book[1].lower()]
     else:
-        input("Поиск по дате: ")
-        found = [book for book in books if book['date'] == date]
-
+        date = input("Дата: ")
+        found = [book for book in books if book[2] == date]
+    
     if found:
-        print("Найденные книги")
+        print("Найдены книги:")
         for book in found:
-            print(f"{book['num']} {book['name']} {book['date']} ")
-
+            print(f"№{book[0]}: {book[1]} ({book[2]})")
     else:
-        print('Книги не найдены')
+        print("Книги не найдены")
 
-def all_books():
+def show_books():
     books = load_books()
     if books:
-        print("Список")
-    for book in books:
-        print(f"{book['num']} {book['name']} {book['date']} ")
+        print("Список книг:")
+        for book in books:
+            print(f"№{book[0]}: {book[1]} ({book[2]})")
     else:
-        print("список пуст")
-
+        print("Список пуст")
 
 def menu():
-    print("\n Добавить книгу")
-    print("Удалить книгу")
-    print("Очистить список")
-    print("Найти книгу")
-    print("Показать библиотеку")
-
+    print("\n1. Добавить книгу")
+    print("2. Удалить книгу")
+    print("3. Очистить список")
+    print("4. Найти книгу")
+    print("5. Показать все книги")
+    print("6. Выйти")
 
 def main():
     while True:
-        show_menu()
+        menu()
         choice = input("Выберите действие: ")
-
-        if choice == "1":
-            add_book()
-        elif choice == "2":
-            delete_book()
-        elif choice == "3":
-            clear_books()
-        elif choice == "4":
-            search_book()
-        elif choice == "5":
-            all_books()
-        elif choice == "6":
-            break
-        else:
-            print("Неверный выбор!")
-
+        
+        if choice == "1": add_book()
+        elif choice == "2": delete_book()
+        elif choice == "3": clear_books()
+        elif choice == "4": search_book()
+        elif choice == "5": show_books()
+        elif choice == "6": break
+        else: print("Неверный выбор!")
 
 if name == "main":
     main()
-
-
-
-
-
