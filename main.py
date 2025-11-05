@@ -67,4 +67,49 @@ def search_book():
     else:
         print('Книги не найдены')
 
+def all_books():
+    books = load_books()
+    if books:
+        print("Список")
+    for book in books:
+        print(f"{book['num']} {book['name']} {book['date']} ")
+    else:
+        print("список пуст")
+
+
+def menu():
+    print("\n Добавить книгу")
+    print("Удалить книгу")
+    print("Очистить список")
+    print("Найти книгу")
+    print("Показать библиотеку")
+
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выберите действие: ")
+
+        if choice == "1":
+            add_book()
+        elif choice == "2":
+            delete_book()
+        elif choice == "3":
+            clear_books()
+        elif choice == "4":
+            search_book()
+        elif choice == "5":
+            all_books()
+        elif choice == "6":
+            break
+        else:
+            print("Неверный выбор!")
+
+
+if name == "main":
+    main()
+
+
+
+
 
